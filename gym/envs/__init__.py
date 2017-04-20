@@ -220,6 +220,13 @@ register(
 )
 
 register(
+    id='Gripper-v0',
+    entry_point='gym.envs.mujoco:GripperEnv',
+    max_episode_steps=50,
+    reward_threshold=-3.75,
+)
+
+register(
     id='InvertedPendulum-v1',
     entry_point='gym.envs.mujoco:InvertedPendulumEnv',
     max_episode_steps=1000,

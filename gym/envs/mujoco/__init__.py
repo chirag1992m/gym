@@ -13,3 +13,4 @@ from gym.envs.mujoco.swimmer import SwimmerEnv
 from gym.envs.mujoco.humanoidstandup import HumanoidStandupEnv
 from gym.envs.mujoco.reacher_double_joint import ReacherDoubleJointEnv
 from gym.envs.mujoco.peg import PegEnv
+from gym.envs.mujoco.gripper import GripperEnv

@@ -1190,4 +1190,12 @@ add_task(
     contributor='chirag1992m'
 )
 
+add_task(
+    id='Gripper-v0',
+    group='mujoco',
+    summary="Make a 2D robot handle with three joints and gripper to move a randomly located source ball to a randomly located target ball",
+    deprecated=False,
+    contributor='chirag1992m'
+)
+
 registry.finalize()
