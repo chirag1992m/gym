@@ -1182,4 +1182,12 @@ add_task(
     contributor='chirag1992m'
 )
 
+add_task(
+    id='Peg-v0',
+    group='mujoco',
+    summary="Make a 2D robot handle with three joints to move to a randomly located target inside a small gap between two walls",
+    deprecated=False,
+    contributor='chirag1992m'
+)
+
 registry.finalize()
