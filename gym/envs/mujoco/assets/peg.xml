@@ -1,5 +1,5 @@
 <!-- [TODO]: Add collision with walls and boundary. Check if we should provide "negative" for that. -->
-<mujoco model="reacher_double_joint">
+<mujoco model="peg">
 	<compiler angle="radian" inertiafromgeom="true"/>
 	<default>
 		<joint armature="1" damping="1" limited="true"/>
