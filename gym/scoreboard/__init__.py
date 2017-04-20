@@ -438,7 +438,7 @@ Make a two-dimensional bipedal robot walk forward as fast as possible.
 The robot model is based on work by Erez, Tassa, and Todorov [Erez11]_.
 
 .. [Erez11] T Erez, Y Tassa, E Todorov, "Infinite Horizon Model Predictive Control for Nonlinear Periodic Tasks", 2011.
-
+-
 """,
 )
 
@@ -1172,6 +1172,14 @@ The robot model was originally created by Tassa et al. [Tassa12]_.
 .. [Tassa12] Y Tassa, T Erez, E Todorov, "Synthesis and Stabilization of Complex Behaviors through Online Trajectory Optimization".
 """,
     deprecated=True,
+)
+
+add_task(
+    id='ReacherDoubleJoint-v0',
+    group='mujoco',
+    summary="Make a 2D robot handle with more joints to move to a randomly located target",
+    deprecated=False,
+    contributor='chirag1992m'
 )
 
 registry.finalize()
