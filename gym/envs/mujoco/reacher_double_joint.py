@@ -17,7 +17,6 @@ class ReacherDoubleJointEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward_dist = - dist #Reward based on distance
 
         #Small movements are rewarded more
-        # [TODO] check requirement
         reward_ctrl = - np.square(a).sum()
 
         #total reward
@@ -31,10 +30,6 @@ class ReacherDoubleJointEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl)
 
     #Change viewer to see in the upward position
-    ''' 
-    [TODO] Any other mod required here? 
-    Or can it set on initialization from directly from some arguments
-    '''
     def viewer_setup(self):
         self.viewer.cam.trackbodyid = 0
         self.viewer.cam.distance *= 1.5
@@ -47,10 +42,7 @@ class ReacherDoubleJointEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
         
         #Choose a random position for target
-        while True:
-            self.goal = self.np_random.uniform(low=-.32, high=.32, size=2)
-            if np.linalg.norm(self.goal) < 2:
-                break
+        self.goal = self.np_random.uniform(low=-.32, high=.32, size=2)
         #Set position for target
         qpos[-2:] = self.goal
         qvel[-2:] = 0
