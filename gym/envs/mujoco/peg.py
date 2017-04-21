@@ -8,6 +8,7 @@ class PegEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         mujoco_env.MujocoEnv.__init__(self, 'peg.xml', 2)
 
     def _step(self, a):
+        # [TODO] Any negative reward for collision?
         #Get the position of Target and our
         pos_fingertip = self.get_body_com("fingertip")
         pos_target = self.get_body_com("target")

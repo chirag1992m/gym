@@ -1,27 +1,26 @@
-<!-- [TODO]: Add collision with walls and boundary. Check if we should provide "negative" for that. -->
 <mujoco model="peg">
 	<compiler angle="radian" inertiafromgeom="true"/>
 	<default>
 		<joint armature="1" damping="1" limited="true"/>
-		<geom contype="0" friction="1 0.1 0.1" rgba="0.7 0.7 0 1"/>
+		<geom conaffinity="1" contype="1" condim="1" friction="1 0.1 0.1" rgba="0.7 0.7 0 1"/>
 	</default>
 	<option gravity="0 0 -9.81" integrator="RK4" timestep="0.01"/>
 	<worldbody>
 		<!-- Arena -->
-		<geom conaffinity="0" contype="0" name="ground" pos="0 0 0" rgba="0.9 0.9 0.9 1" size="1 1 10" type="plane"/>
-		<geom conaffinity="0" fromto="-.15 -.35 .01 .35 -.35 .01" name="boundaryS" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
-		<geom conaffinity="0" fromto=" .35 -.35 .01 .35  .35 .01" name="boundaryE" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
-		<geom conaffinity="0" fromto="-.15  .35 .01 .35  .35 .01" name="boundaryN" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
-		<geom conaffinity="0" fromto="-.15 -.35 .01 -.15 .35 .01" name="boundaryW" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
+		<geom name="ground" pos="0 0 0" rgba="0.9 0.9 0.9 1" size="1 1 10" type="plane"/>
+		<geom fromto="-.15 -.35 .01 .35 -.35 .01" name="boundaryS" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
+		<geom fromto=" .35 -.35 .01 .35  .35 .01" name="boundaryE" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
+		<geom fromto="-.15  .35 .01 .35  .35 .01" name="boundaryN" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
+		<geom fromto="-.15 -.35 .01 -.15 .35 .01" name="boundaryW" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
 		<!-- Wall -->
-		<geom conaffinity="0" contype="0" name="wall_1_ground" pos="0.25 0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
-		<geom conaffinity="0" contype="0" name="wall_2_ground" pos="0.25 -0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
-		<geom conaffinity="0" fromto="0.15 0.012 .01 .36 0.012 .01" name="wall_1_sideS" rgba="0 0 0 1" size=".001" type="capsule"/>
-		<geom conaffinity="0" fromto="0.15 0.012 .01 0.15 0.35 .01" name="wall_1_sideW" rgba="0 0 0 1" size=".001" type="capsule"/>
-		<geom conaffinity="0" fromto="0.15 -0.012 .01 .36 -0.012 .01" name="wall_2_sideN" rgba="0 0 0 1" size=".001" type="capsule"/>
-		<geom conaffinity="0" fromto="0.15 -0.012 .01 0.15 -0.35 .01" name="wall_2_sideW" rgba="0 0 0 1" size=".001" type="capsule"/>
+		<geom name="wall_1_ground" pos="0.25 0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
+		<geom name="wall_2_ground" pos="0.25 -0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
+		<geom fromto="0.15 0.022 .01 .36 0.022 .01" name="wall_1_sideS" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 0.022 .01 0.15 0.35 .01" name="wall_1_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 -0.022 .01 .36 -0.022 .01" name="wall_2_sideN" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 -0.022 .01 0.15 -0.35 .01" name="wall_2_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
 		<!-- Arm -->
-		<geom conaffinity="0" contype="0" fromto="0 0 0 0 0 0.02" name="root" rgba="0.9 0.4 0.6 1" size=".011" type="cylinder"/>
+		<geom fromto="0 0 0 0 0 0.02" name="root" rgba="0.9 0.4 0.6 1" size=".011" type="cylinder"/>
 		<body name="body0" pos="0 0 .01">
 			<geom fromto="0 0 0 0 0.1 0" name="link0" rgba="0.0 0.4 0.6 1" size=".01" type="capsule"/>
 			<joint axis="0 0 1" limited="false" name="joint0" pos="0 0 0" type="hinge"/>
@@ -32,7 +31,7 @@
 					<joint axis="0 0 1" limited="true" name="joint2" pos="0 0 0" range="-3.0 3.0" type="hinge"/>
 					<geom fromto="0 0 0 0 0.05 0" name="link2" rgba="0.0 0.4 0.6 1" size=".01" type="capsule"/>				
 					<body name="fingertip" pos="0 0.06 0">
-						<geom contype="0" name="fingertip" pos="0 0 0" rgba="0.0 0.8 0.6 1" size=".01" type="sphere"/>
+						<geom name="fingertip" pos="0 0 0" rgba="0.0 0.8 0.6 1" size=".01" type="sphere"/>
 					</body>
 				</body>
 			</body>
@@ -40,7 +39,6 @@
 		<!-- Target -->
 		<body name="target" pos=".1 0 .01">
 			<joint armature="0" axis="1 0 0" damping="0" limited="true" name="target_x" pos="0 0 0" range="-.12 .32" ref=".1" stiffness="0" type="slide"/>
-			<!-- <joint armature="0" axis="0 1 0" damping="0" limited="true" name="target_y" pos="0 0 0" range="-.32 .32" ref="-.1" stiffness="0" type="slide"/> -->
 			<geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".009" type="sphere"/>
 		</body>
 	</worldbody>
