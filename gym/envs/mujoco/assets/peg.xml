@@ -13,12 +13,12 @@
 		<geom fromto="-.15  .35 .01 .35  .35 .01" name="boundaryN" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
 		<geom fromto="-.15 -.35 .01 -.15 .35 .01" name="boundaryW" rgba="0.9 0.4 0.6 1" size=".02" type="capsule"/>
 		<!-- Wall -->
-		<geom name="wall_1_ground" pos="0.25 0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
-		<geom name="wall_2_ground" pos="0.25 -0.1735 0" rgba="0.53 0.3 0 1" size="0.1 0.1605 1" type="plane"/>
-		<geom fromto="0.15 0.022 .01 .36 0.022 .01" name="wall_1_sideS" rgba="0 0 0 1" size=".01" type="capsule"/>
-		<geom fromto="0.15 0.022 .01 0.15 0.35 .01" name="wall_1_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
-		<geom fromto="0.15 -0.022 .01 .36 -0.022 .01" name="wall_2_sideN" rgba="0 0 0 1" size=".01" type="capsule"/>
-		<geom fromto="0.15 -0.022 .01 0.15 -0.35 .01" name="wall_2_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom name="wall_1_ground" pos="0.25 0.1875 0" rgba="0.53 0.3 0 1" size="0.1 0.1455 10" type="plane"/>
+		<geom name="wall_2_ground" pos="0.25 -0.1875 0" rgba="0.53 0.3 0 1" size="0.1 0.1455 10" type="plane"/>
+		<geom fromto="0.15 0.032 .01 .36 0.032 .01" name="wall_1_sideS" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 0.032 .01 0.15 0.35 .01" name="wall_1_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 -0.032 .01 .36 -0.032 .01" name="wall_2_sideN" rgba="0 0 0 1" size=".01" type="capsule"/>
+		<geom fromto="0.15 -0.032 .01 0.15 -0.35 .01" name="wall_2_sideW" rgba="0 0 0 1" size=".01" type="capsule"/>
 		<!-- Arm -->
 		<geom fromto="0 0 0 0 0 0.02" name="root" rgba="0.9 0.4 0.6 1" size=".011" type="cylinder"/>
 		<body name="body0" pos="0 0 .01">

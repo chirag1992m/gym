@@ -43,7 +43,7 @@ class PegEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
         
         #Choose a random position for target
-        self.goal = self.np_random.uniform(low=.05, high=.32, size=1)
+        self.goal = self.np_random.uniform(low=.16, high=.32, size=1)
         #Set position for target
         qpos[-1:] = self.goal
         qvel[-1:] = 0
