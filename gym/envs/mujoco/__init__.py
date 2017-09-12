@@ -14,3 +14,6 @@ from gym.envs.mujoco.humanoidstandup import HumanoidStandupEnv
 from gym.envs.mujoco.reacher_double_joint import ReacherDoubleJointEnv
 from gym.envs.mujoco.peg import PegEnv
 from gym.envs.mujoco.gripper import GripperEnv
+from gym.envs.mujoco.pusher import PusherEnv
+from gym.envs.mujoco.thrower import ThrowerEnv
+from gym.envs.mujoco.striker import StrikerEnv
