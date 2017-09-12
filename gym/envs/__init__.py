@@ -229,6 +229,7 @@ register(
     entry_point='gym.envs.mujoco:GripperEnv',
     max_episode_steps=50,
     reward_threshold=-3.75,
+)
 
 register(
     id='Pusher-v0',
