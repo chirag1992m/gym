@@ -312,6 +312,12 @@ register(
     max_episode_steps=1000,
 )
 
+register(
+    id='Simple-v0',
+    entry_point='gym.envs.mujoco:SimpleEnv',
+    max_episode_steps=1000,
+)
+
 # Atari
 # ----------------------------------------
 
