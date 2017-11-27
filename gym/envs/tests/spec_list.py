@@ -11,7 +11,8 @@ def should_skip_env_spec_for_tests(spec):
     skip_mujoco = not (os.environ.get('MUJOCO_KEY_BUNDLE') or os.path.exists(os.path.expanduser('~/.mujoco')))
     if skip_mujoco and ep.startswith('gym.envs.mujoco:'):
         return True
-    if (    'GoEnv' in ep or
+    if (    'ConnectFourEnv' in ep or
+            'GoEnv' in ep or
             'HexEnv' in ep or
             'TicTacToeEnv' in ep or
             ep.startswith('gym.envs.box2d:') or

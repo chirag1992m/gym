@@ -379,6 +379,17 @@ for game in ['air_raid', 'alien', 'amidar', 'assault', 'asterix', 'asteroids', '
 # ----------------------------------------
 
 register(
+    id='ConnectFour7x7-v0',
+    entry_point='gym.envs.board_game:TicTacToeEnv',
+    kwargs={
+        'player_label': 'red',
+        'opponent': 'random',
+        'illegal_move_mode': 'lose',
+        'board_size': 7,
+    },
+)
+
+register(
     id='Go9x9-v0',
     entry_point='gym.envs.board_game:GoEnv',
     kwargs={
