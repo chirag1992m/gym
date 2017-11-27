@@ -420,6 +420,17 @@ register(
     },
 )
 
+register(
+    id='TicTacToe3x3-v0',
+    entry_point='gym.envs.board_game:TicTacToeEnv',
+    kwargs={
+        'player_label': 'cross',
+        'opponent': 'random',
+        'illegal_move_mode': 'lose',
+        'board_size': 3,
+    },
+)
+
 # Debugging
 # ----------------------------------------
 

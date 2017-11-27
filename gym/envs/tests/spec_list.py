@@ -13,6 +13,7 @@ def should_skip_env_spec_for_tests(spec):
         return True
     if (    'GoEnv' in ep or
             'HexEnv' in ep or
+            'TicTacToeEnv' in ep or
             ep.startswith('gym.envs.box2d:') or
             ep.startswith('gym.envs.box2d:') or
             ep.startswith('gym.envs.parameter_tuning:') or
