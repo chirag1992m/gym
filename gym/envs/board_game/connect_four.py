@@ -34,7 +34,7 @@ class ConnectFourEnv(Env):
             opponent: Opponent policy
             illegal_move_mode: What to do when an agent makes an illegal move.
                 Either 'raise' or 'lose'
-            board_size: Size of the Tic-Tac-Toe board
+            board_size: Size of the Connect-Four board
         """
         assert (isinstance(board_size, int) and board_size > 1), \
             "Invalid board size {}".format(board_size)
@@ -155,12 +155,11 @@ class ConnectFourEnv(Env):
 
     def make_move(self, action, player_label):
         ht = self.height[action]
-        self.state[coordinate][ht] = player_label
+        self.state[action][ht] = player_label
         self.height[action] += 1
 
     def check_win(self, player_label):
         max_consecutive = 0
-        cur = 0
         for row in range(self.board_size):
             cur = 0
             for col in range(self.board_size):
@@ -199,8 +198,6 @@ class ConnectFourEnv(Env):
                         return True
         return False
 
-
-
     def game_finished(self):
         """
         :return: -1, if nobody has won the game.
@@ -214,12 +211,13 @@ class ConnectFourEnv(Env):
         return -1
 
     def valid_move(self, action):
-        if action >= 0 and action < self.board_size:
+        if 0 <= action < self.board_size:
             if self.height[action] < self.board_size:
                 return True
         return False
 
     @staticmethod
     def get_possible_actions(state):
-        free_actions = np.where(height != self.board_size)
+        free_x, _ = np.where(state == -1)
+        free_actions = list(set(free_x))
         return free_actions
