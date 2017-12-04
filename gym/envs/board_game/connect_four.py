@@ -27,11 +27,9 @@ class ConnectFourEnv(Env):
     RED = 0
     BLUE = 1
 
-    def __init__(self, player_label, opponent, illegal_move_mode, board_size):
+    def __init__(self, illegal_move_mode, board_size):
         """
         Args:
-            player_label: Label for the agent. Either 'RED' or 'BLUE'
-            opponent: Opponent policy
             illegal_move_mode: What to do when an agent makes an illegal move.
                 Either 'raise' or 'lose'
             board_size: Size of the Connect-Four board
@@ -41,54 +39,36 @@ class ConnectFourEnv(Env):
         self.board_size = board_size
         self.board_shape = (3, board_size, board_size)
 
-        colormap = {
-            'red': ConnectFourEnv.RED,
-            'blue': ConnectFourEnv.BLUE
-        }
-        try:
-            self.player_label = colormap[player_label]
-        except KeyError:
-            raise error.Error(
-                "player_color must be 'red' or 'blue', not {}".format(player_label))
-
-        self.opponent = opponent
-
         assert illegal_move_mode in ['lose', 'raise'], \
             'Unsupported illegal move action: {}'.format(illegal_move_mode)
         self.illegal_move_mode = illegal_move_mode
         self.action_space = spaces.Discrete(self.board_size)
         self.observation_space = spaces.Box(0, 1, shape=self.board_shape)
 
+        self.num_players = 2
+
         self.seed()
         self.reset()
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
-
-        # Update the random policy if needed
-        if isinstance(self.opponent, str):
-            if self.opponent == 'random':
-                self.opponent_policy = make_connect_four_random_policy(self.np_random)
-            else:
-                raise error.Error('Unrecognized opponent policy {}'.format(self.opponent))
-        else:
-            self.opponent_policy = self.opponent
-
         return [seed]
+
+    def get_state(self):
+        return [self.state] * self.num_players
 
     def _reset(self):
         self.state = np.zeros(self.board_shape, dtype=np.int8)
         self.state[2, :] = 1
         self.height = np.zeros(self.board_size, dtype=np.int8)
         self.chance = ConnectFourEnv.BLUE
-        self.done = False
+        self.done = [False] * self.num_players
+        self.reward = [0.] * self.num_players
 
-        if self.player_label != self.chance:
-            action = self.opponent_policy(self.state)
-            self.make_move(action, self.chance)
-            self.switch_player()
+        return self.get_state()
 
-        return self.state
+    def get_obs(self):
+        return self.get_state(), self.reward, self.done, {}
 
     def switch_player(self):
         self.chance = 1 - self.chance
@@ -119,39 +99,28 @@ class ConnectFourEnv(Env):
             return outfile
 
     def _step(self, action):
-        assert self.chance == self.player_label
+        player_id, action = action
+        assert self.chance == player_id
         # If already terminal, then don't do anything
-        if self.done:
-            return self.state, 0., True, {'state': self.state}
+        if all(self.done):
+            self.reward = [0.] * self.num_players
+            return self.get_obs()
 
         if not self.valid_move(action):
             if self.illegal_move_mode == 'raise':
                 raise error.Error('Invalid move action: {}'.format(action))
             elif self.illegal_move_mode == 'lose':
                 # Automatic loss on illegal move
-                self.done = True
-                return self.state, -1., True, {'state': self.state}
+                self.done = [True] * self.num_players
+                self.reward[player_id] = -1.
+                return self.get_obs()
 
         self.make_move(action, self.chance)
-        winner = self.game_finished()
-        if winner != -1:
-            reward = 1 if winner == self.player_label else -1
-            self.done = True
-            return self.state, reward, self.done, {'state': self.state}
+        self.check_and_update_internals()
 
         self.switch_player()
-        # Opponent play
-        a = self.opponent_policy(self.state)
-        if a is not None:
-            self.make_move(a, self.chance)
-        self.switch_player()
 
-        winner = self.game_finished()
-        reward = 0
-        if winner != -1:
-            reward = 1 if winner == self.player_label else -1
-            self.done = True
-        return self.state, reward, self.done, {'state': self.state}
+        return self.get_obs()
 
     def make_move(self, action, player_label):
         ht = self.height[action]
@@ -199,21 +168,27 @@ class ConnectFourEnv(Env):
                         return True
         return False
 
-    def game_finished(self):
+    def check_and_update_internals(self):
         """
-        :return: -1, if nobody has won the game.
-            BLUE if BLUEes has won
-            RED if REDs has won
+        Updates internal states based on the current
+        state of the board
         """
         if self.check_win(ConnectFourEnv.RED):
-            return ConnectFourEnv.RED
+            self.done = [True] * self.num_players
+            self.reward[ConnectFourEnv.RED] = 1.0
+            self.reward[ConnectFourEnv.BLUE] = -1.0
+            return
         if self.check_win(ConnectFourEnv.BLUE):
-            return ConnectFourEnv.BLUE
+            self.done = [True] * self.num_players
+            self.reward[ConnectFourEnv.RED] = -1.0
+            self.reward[ConnectFourEnv.BLUE] = 1.0
+            return
 
         if np.sum(np.logical_not(self.state[2, :])) == self.board_size**2:
-            self.done = True
-
-        return -1
+            self.done = [True] * self.num_players
+            self.reward[ConnectFourEnv.RED] = 0.5
+            self.reward[ConnectFourEnv.BLUE] = 0.5
+            return
 
     def valid_move(self, action):
         if 0 <= action < self.board_size:
