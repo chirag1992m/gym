@@ -382,7 +382,7 @@ register(
     id='ConnectFour7x7-v0',
     entry_point='gym.envs.board_game:ConnectFourEnv',
     kwargs={
-        'player_label': 'red',
+        'player_label': 'blue',
         'opponent': 'random',
         'illegal_move_mode': 'lose',
         'board_size': 7,
