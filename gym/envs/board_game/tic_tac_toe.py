@@ -39,7 +39,7 @@ class TicTacToeEnv(Env):
         assert (isinstance(board_size, int) and board_size > 1), \
             "Invalid board size {}".format(board_size)
         self.board_size = board_size
-        self.board_shape = (board_size, board_size)
+        self.board_shape = (3, board_size, board_size)
 
         colormap = {
             'naught': TicTacToeEnv.NAUGHT,
@@ -57,7 +57,7 @@ class TicTacToeEnv(Env):
             'Unsupported illegal move action: {}'.format(illegal_move_mode)
         self.illegal_move_mode = illegal_move_mode
         self.action_space = spaces.Discrete(self.board_size**2)
-        self.observation_space = spaces.Box(-1, 1, shape=self.board_shape)
+        self.observation_space = spaces.Box(0, 1, shape=self.board_shape)
 
         self.seed()
         self.reset()
@@ -77,7 +77,8 @@ class TicTacToeEnv(Env):
         return [seed]
 
     def _reset(self):
-        self.state = np.full(self.board_shape, fill_value=-1, dtype=np.int8)
+        self.state = np.zeros(self.board_shape, dtype=np.int8)
+        self.state[2, :] = 1
         self.chance = TicTacToeEnv.CROSS
         self.done = False
 
@@ -100,12 +101,13 @@ class TicTacToeEnv(Env):
         outfile.write('\n')
         for x in range(self.board_size):
             for y in range(self.board_size):
-                if self.state[x, y] == -1:
+                if self.state[2, x, y] == 1:
                     outfile.write('   ')
-                elif self.state[x, y] == 0:
-                    outfile.write(' O ')
-                elif self.state[x, y] == 1:
-                    outfile.write(' X ')
+                else:
+                    if self.state[0, x, y] == 1:
+                        outfile.write(' O ')
+                    else:
+                        outfile.write(' X ')
                 if y != self.board_size - 1:
                     outfile.write('|')
             outfile.write('\n')
@@ -148,13 +150,12 @@ class TicTacToeEnv(Env):
         if winner != -1:
             reward = 1 if winner == self.player_label else -1
             self.done = True
-        if np.sum(np.logical_or(self.state == 0, self.state == 1)) == self.board_size**2:
-            self.done = True
         return self.state, reward, self.done, {'state': self.state}
 
     def make_move(self, action, player_label):
         coordinate = TicTacToeEnv.action_to_coordinate(action, self.board_size)
-        self.state[coordinate] = player_label
+        self.state[(2,) + coordinate] = 0
+        self.state[(player_label,) + coordinate] = 1
 
     def game_finished(self):
         """
@@ -162,8 +163,8 @@ class TicTacToeEnv(Env):
             CROSS if CROSSes has won
             NAUGHT if NAUGHTs has won
         """
-        naughts = self.state == TicTacToeEnv.NAUGHT
-        crosses = self.state == TicTacToeEnv.CROSS
+        naughts = self.state[TicTacToeEnv.NAUGHT]
+        crosses = self.state[TicTacToeEnv.CROSS]
 
         if (np.any(np.sum(naughts, axis=0) == self.board_size) or
                 np.any(np.sum(naughts, axis=1) == self.board_size)):
@@ -179,11 +180,15 @@ class TicTacToeEnv(Env):
                 np.sum(np.diag(np.flipud(crosses))) == self.board_size):
             return TicTacToeEnv.CROSS
 
+        # Checking for Draw
+        if np.sum(np.logical_not(self.state[2, :])) == self.board_size**2:
+            self.done = True
+
         return -1
 
     def valid_move(self, action):
         coordinate = TicTacToeEnv.action_to_coordinate(action, self.board_size)
-        if self.state[coordinate] == -1:
+        if self.state[(2,) + coordinate] == 1:
             return True
         return False
 
@@ -200,6 +205,6 @@ class TicTacToeEnv(Env):
 
     @staticmethod
     def get_possible_actions(state):
-        free_x, free_y = np.where(state == -1)
+        free_x, free_y = np.where(state[2, :] == 1)
         return [TicTacToeEnv.coordinate_to_action((x, y), state.shape[0])
                 for x, y in zip(free_x, free_y)]

@@ -39,7 +39,7 @@ class ConnectFourEnv(Env):
         assert (isinstance(board_size, int) and board_size > 1), \
             "Invalid board size {}".format(board_size)
         self.board_size = board_size
-        self.board_shape = (board_size, board_size)
+        self.board_shape = (3, board_size, board_size)
 
         colormap = {
             'red': ConnectFourEnv.RED,
@@ -57,7 +57,7 @@ class ConnectFourEnv(Env):
             'Unsupported illegal move action: {}'.format(illegal_move_mode)
         self.illegal_move_mode = illegal_move_mode
         self.action_space = spaces.Discrete(self.board_size)
-        self.observation_space = spaces.Box(-1, 1, shape=self.board_shape)
+        self.observation_space = spaces.Box(0, 1, shape=self.board_shape)
 
         self.seed()
         self.reset()
@@ -77,8 +77,9 @@ class ConnectFourEnv(Env):
         return [seed]
 
     def _reset(self):
-        self.state = np.full(self.board_shape, fill_value=-1, dtype=np.int8)
-        self.height = np.full(self.board_size, fill_value=0, dtype=np.int8)
+        self.state = np.zeros(self.board_shape, dtype=np.int8)
+        self.state[2, :] = 1
+        self.height = np.zeros(self.board_size, dtype=np.int8)
         self.chance = ConnectFourEnv.BLUE
         self.done = False
 
@@ -101,12 +102,13 @@ class ConnectFourEnv(Env):
         outfile.write('\n')
         for x in range(self.board_size):
             for y in range(self.board_size):
-                if self.state[x, y] == -1:
+                if self.state[2, x, y] == 1:
                     outfile.write('   ')
-                elif self.state[x, y] == 0:
-                    outfile.write(' R ')
-                elif self.state[x, y] == 1:
-                    outfile.write(' B ')
+                else:
+                    if self.state[0, x, y] == 1:
+                        outfile.write(' R ')
+                    else:
+                        outfile.write(' B ')
                 if y != self.board_size - 1:
                     outfile.write('|')
             outfile.write('\n')
@@ -149,13 +151,12 @@ class ConnectFourEnv(Env):
         if winner != -1:
             reward = 1 if winner == self.player_label else -1
             self.done = True
-        if np.sum(np.logical_or(self.state == 0, self.state == 1)) == self.board_size**2:
-            self.done = True
         return self.state, reward, self.done, {'state': self.state}
 
     def make_move(self, action, player_label):
         ht = self.height[action]
-        self.state[action][ht] = player_label
+        self.state[player_label][action][ht] = 1
+        self.state[2][action][ht] = 0
         self.height[action] += 1
 
     def check_win(self, player_label):
@@ -163,7 +164,7 @@ class ConnectFourEnv(Env):
         for row in range(self.board_size):
             cur = 0
             for col in range(self.board_size):
-                if self.state[row][col] == player_label:
+                if self.state[player_label][row][col]:
                     cur += 1
                     max_consecutive = max(max_consecutive, cur)
                 else:
@@ -173,7 +174,7 @@ class ConnectFourEnv(Env):
         for col in range(self.board_size):
             cur = 0
             for row in range(self.board_size):
-                if self.state[row][col] == player_label:
+                if self.state[player_label][row][col]:
                     cur += 1
                     max_consecutive = max(max_consecutive, cur)
                 else:
@@ -185,14 +186,14 @@ class ConnectFourEnv(Env):
                 if row <= self.board_size - 4 and col <= self.board_size - 4:
                     cur = 0
                     for delta in range(4):
-                        if self.state[row+delta][col+delta] == player_label:
+                        if self.state[player_label][row+delta][col+delta]:
                             cur += 1
                     if cur >= 4:
                         return True
                 if row <= self.board_size - 4 and col >= 3:
                     cur = 0
                     for delta in range(4):
-                        if self.state[row+delta][col-delta] == player_label:
+                        if self.state[player_label][row+delta][col-delta]:
                             cur += 1
                     if cur >= 4:
                         return True
@@ -208,6 +209,10 @@ class ConnectFourEnv(Env):
             return ConnectFourEnv.RED
         if self.check_win(ConnectFourEnv.BLUE):
             return ConnectFourEnv.BLUE
+
+        if np.sum(np.logical_not(self.state[2, :])) == self.board_size**2:
+            self.done = True
+
         return -1
 
     def valid_move(self, action):
@@ -218,6 +223,6 @@ class ConnectFourEnv(Env):
 
     @staticmethod
     def get_possible_actions(state):
-        free_x, _ = np.where(state == -1)
+        free_x, _ = np.where(state[2, :] == 1)
         free_actions = list(set(free_x))
         return free_actions
