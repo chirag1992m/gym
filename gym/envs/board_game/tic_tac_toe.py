@@ -112,6 +112,7 @@ class TicTacToeEnv(Env):
                 # Automatic loss on illegal move
                 self.done = [True] * self.num_players
                 self.reward[player_id] = -1.
+                self.reward[1 - player_id] = 1.0
                 return self.get_obs()
 
         self.make_move(action, self.chance)
@@ -162,8 +163,8 @@ class TicTacToeEnv(Env):
         # Checking for Draw
         if np.sum(np.logical_not(self.state[2, :])) == self.board_size**2:
             self.done = [True] * self.num_players
-            self.reward[TicTacToeEnv.NAUGHT] = 0.5
-            self.reward[TicTacToeEnv.CROSS] = 0.5
+            self.reward[TicTacToeEnv.NAUGHT] = 0.
+            self.reward[TicTacToeEnv.CROSS] = 0.
 
     def valid_move(self, action):
         coordinate = TicTacToeEnv.action_to_coordinate(action, self.board_size)

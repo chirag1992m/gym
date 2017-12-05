@@ -113,6 +113,7 @@ class ConnectFourEnv(Env):
                 # Automatic loss on illegal move
                 self.done = [True] * self.num_players
                 self.reward[player_id] = -1.
+                self.reward[1 - player_id] = 1.0
                 return self.get_obs()
 
         self.make_move(action, self.chance)
@@ -186,8 +187,8 @@ class ConnectFourEnv(Env):
 
         if np.sum(np.logical_not(self.state[2, :])) == self.board_size**2:
             self.done = [True] * self.num_players
-            self.reward[ConnectFourEnv.RED] = 0.5
-            self.reward[ConnectFourEnv.BLUE] = 0.5
+            self.reward[ConnectFourEnv.RED] = 0.
+            self.reward[ConnectFourEnv.BLUE] = 0.
             return
 
     def valid_move(self, action):
