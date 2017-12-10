@@ -189,9 +189,10 @@ class TicTacToeEnv(Env):
     @staticmethod
     def valid_move(state, action):
         board_size = state.shape[-1]
-        coordinate = TicTacToeEnv.action_to_coordinate(action, board_size)
-        if state[(2,) + coordinate] == 1:
-            return True
+        if 0 <= action < board_size ** 2:
+            coordinate = TicTacToeEnv.action_to_coordinate(action, board_size)
+            if state[(2,) + coordinate] == 1:
+                return True
         return False
 
     @staticmethod
