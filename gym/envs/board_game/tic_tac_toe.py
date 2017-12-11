@@ -68,26 +68,29 @@ class TicTacToeEnv(Env):
         if close:
             return
         outfile = StringIO() if mode == 'ansi' else sys.stdout
+        TicTacToeEnv.render_to_file(self.state, outfile)
+        if mode != 'human':
+            return outfile
 
-        outfile.write('-' * (self.board_size * 4))
+    @staticmethod
+    def render_to_file(state, outfile):
+        board_size = state.shape[-1]
+        outfile.write('-' * (board_size * 4))
         outfile.write('\n')
-        for x in range(self.board_size):
-            for y in range(self.board_size):
-                if self.state[2, x, y] == 1:
+        for x in range(board_size):
+            for y in range(board_size):
+                if state[2, x, y] == 1:
                     outfile.write('   ')
                 else:
-                    if self.state[0, x, y] == 1:
+                    if state[0, x, y] == 1:
                         outfile.write(' O ')
                     else:
                         outfile.write(' X ')
-                if y != self.board_size - 1:
+                if y != board_size - 1:
                     outfile.write('|')
             outfile.write('\n')
-            outfile.write('-' * (self.board_size * 4))
+            outfile.write('-' * (board_size * 4))
             outfile.write('\n')
-
-        if mode != 'human':
-            return outfile
 
     def get_state(self):
         return [self.state] * self.num_players

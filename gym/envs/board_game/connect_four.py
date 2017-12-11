@@ -77,25 +77,30 @@ class ConnectFourEnv(Env):
             return
         outfile = StringIO() if mode == 'ansi' else sys.stdout
 
-        outfile.write('-' * (self.board_size * 4))
-        outfile.write('\n')
-        for x in range(self.board_size):
-            for y in range(self.board_size):
-                if self.state[2, x, y] == 1:
-                    outfile.write('   ')
-                else:
-                    if self.state[0, x, y] == 1:
-                        outfile.write(' R ')
-                    else:
-                        outfile.write(' B ')
-                if y != self.board_size - 1:
-                    outfile.write('|')
-            outfile.write('\n')
-            outfile.write('-' * (self.board_size * 4))
-            outfile.write('\n')
+        ConnectFourEnv.render_to_file(self.state, outfile)
 
         if mode != 'human':
             return outfile
+
+    @staticmethod
+    def render_to_file(state, outfile):
+        board_size = state.shape[-1]
+        outfile.write('-' * (board_size * 4))
+        outfile.write('\n')
+        for x in range(board_size):
+            for y in range(board_size):
+                if state[2, x, y] == 1:
+                    outfile.write('   ')
+                else:
+                    if state[0, x, y] == 1:
+                        outfile.write(' R ')
+                    else:
+                        outfile.write(' B ')
+                if y != board_size - 1:
+                    outfile.write('|')
+            outfile.write('\n')
+            outfile.write('-' * (board_size * 4))
+            outfile.write('\n')
 
     def _step(self, action):
         player_id, action = action
